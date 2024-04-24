@@ -7,23 +7,24 @@
 
 void h()
 {
-    fputs("hello", stdout);
+    puts("hello");
 }
 void H()
 {
-    fputs("Hello", stdout);
+    puts("Hello");
 }
 void w()
 {
-    fputs("hello world", stdout);
+    puts("hello world");
 }
 void W()
 {
-    fputs("Hello World!", stdout);
+    puts("Hello World!");
 }
 void q()
 {
     putchar('q');
+    putchar('\n');
 }
 void b()
 {
@@ -46,6 +47,7 @@ Take one down, pass it around,\n",
         }
         printf("%s bottle%s of beer on the wall.", num, ending);
     }
+    putchar('\n');
 }
 
 void f()
@@ -93,6 +95,7 @@ void t()
             putchar('\n'); // creative liberty to write a newline
         }
     }
+    putchar('\n');
 }
 
 int s_e_i(char *buf)
@@ -124,8 +127,8 @@ int s_e_i(char *buf)
             i = 0;
             tmp = ind + 1;
             for (ind = ind + 1;
-                    ind < NUM_LEN_LIMIT + tmp && buf[ind] >= '0' && buf[ind] <= '9';
-                    ind++) {
+                    ind < NUM_LEN_LIMIT + tmp && buf[ind] >= '0'
+                    && buf[ind] <= '9'; ind++) {
                 i = i * 10 + buf[ind] - '0';
             }
             if (buf[ind] != '\0' && buf[ind] != '\n') {
@@ -146,7 +149,16 @@ int interpret_golf(char *buf)
     if (buf[0] >= '0' && buf[0] <= '9') {
         return s_e_i(buf);
     }
+    // commands are only 1 char long except for the s_e_i command, so if the
+    // check above fails and the next char is not a newline or null, it's an
+    // invalid command and the function exits before the switch statement.
+    if (buf[1] != '\0' && buf[1] != '\n') {
+        return 1;
+    }
     switch (buf[0]) {
+        case '\n': // empty buffer
+        case '\0':
+            return 0;
         case 'h':
             h();
             return 0;
@@ -182,6 +194,9 @@ int interpret_golf(char *buf)
             return 0;
         case 't':
             t();
+            return 0;
+        case '?':
+            puts(HELP);
             return 0;
         default: // invalid command
             return 1;
